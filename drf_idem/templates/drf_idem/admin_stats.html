@@ -42,8 +42,8 @@
       <td style="padding: 8px 12px;"><code>{{ row.endpoint|escape }}</code></td>
       <td style="padding: 8px 12px; text-align: right; font-weight: bold;">{{ row.count }}</td>
       <td style="padding: 8px 12px;">
-        {% if row.last_seen %}
-          {{ row.last_seen|floatformat:0 }}
+        {% if row.last_seen_iso %}
+          <time datetime="{{ row.last_seen_iso }}">{{ row.last_seen_iso }}</time>
         {% else %}
           —
         {% endif %}
