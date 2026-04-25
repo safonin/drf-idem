@@ -149,7 +149,7 @@ The stats page at `/admin/drf-idem/stats/` shows:
 ## Development
 
 ```bash
-git clone https://github.com/example/drf-idem
+git clone https://github.com/safonin/drf-idem
 cd drf-idem
 uv sync --extra dev
 uv run pytest -v
