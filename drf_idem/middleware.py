@@ -1,3 +1,4 @@
+import fnmatch
 import json
 import re
 
@@ -17,6 +18,14 @@ def _validate_request_id(value: str) -> bool:
     return bool(_REQUEST_ID_RE.match(value))
 
 
+def _path_matches(path: str, pattern: str) -> bool:
+    if "*" in pattern:
+        return fnmatch.fnmatchcase(path, pattern) or fnmatch.fnmatchcase(
+            path, pattern + "*"
+        )
+    return path.startswith(pattern)
+
+
 def _endpoint_matches(
     method: str, path: str, endpoints: list[str], methods: list[str]
 ) -> bool:
@@ -27,6 +36,7 @@ def _endpoint_matches(
     - "POST /api/payments/" — specific method + path prefix
     - "/api/critical/"     — any method from `methods` + path prefix
     - "* /api/orders/"     — explicitly all methods + path prefix
+    - "POST /api/v5/order/*/pay/" — wildcard matching
     """
     if not endpoints:
         return method.upper() in [m.upper() for m in methods]
@@ -35,14 +45,14 @@ def _endpoint_matches(
         parts = pattern.strip().split(None, 1)
         if len(parts) == 1:
             path_prefix = parts[0]
-            if path.startswith(path_prefix) and method.upper() in [
+            if _path_matches(path, path_prefix) and method.upper() in [
                 m.upper() for m in methods
             ]:
                 return True
         else:
             pat_method, path_prefix = parts
             method_match = pat_method == "*" or pat_method.upper() == method.upper()
-            if method_match and path.startswith(path_prefix):
+            if method_match and _path_matches(path, path_prefix):
                 return True
     return False
 

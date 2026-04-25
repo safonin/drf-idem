@@ -107,3 +107,28 @@ def test_different_methods_same_request_id_not_blocked(client):
         "/api/test/", data={}, format="json", HTTP_X_REQUEST_ID="method-id"
     )
     assert resp.json()["method"] == "PUT"
+
+
+def test_endpoint_wildcard_matching():
+    from drf_idem.middleware import _endpoint_matches
+
+    # Wildcard path matching
+    endpoints = ["POST /api/v5/order/*/pay/"]
+    assert (
+        _endpoint_matches("POST", "/api/v5/order/123/pay/", endpoints, ["POST"]) is True
+    )
+    assert (
+        _endpoint_matches("POST", "/api/v5/order/123/pay/details", endpoints, ["POST"])
+        is True
+    )
+    assert _endpoint_matches("POST", "/api/v5/order/pay/", endpoints, ["POST"]) is False
+
+    # Implicit prefix matching for regular strings
+    endpoints_prefix = ["/api/payments/"]
+    assert (
+        _endpoint_matches("POST", "/api/payments/123/", endpoints_prefix, ["POST"])
+        is True
+    )
+    assert (
+        _endpoint_matches("POST", "/api/payments/", endpoints_prefix, ["POST"]) is True
+    )
