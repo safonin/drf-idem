@@ -36,7 +36,7 @@ def _endpoint_matches(
     - "POST /api/payments/" — specific method + path prefix
     - "/api/critical/"     — any method from `methods` + path prefix
     - "* /api/orders/"     — explicitly all methods + path prefix
-    - "POST /api/v5/order/*/pay/" — wildcard matching
+    - "POST /api/order/*/pay/" — wildcard matching
     """
     if not endpoints:
         return method.upper() in [m.upper() for m in methods]
