@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.venv/
+dist/
+build/
+.coverage
+.pytest_cache/
+.zed
+CLAUDE.md
+docs/superpowers
+.claude
+.gemini
+.ropeproject
+docs

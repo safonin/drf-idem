@@ -1,0 +1,65 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+include-package-data = true
+
+[project]
+name = "drf-idem"
+version = "0.1.0"
+description = "Idempotency middleware for Django REST Framework"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+authors = [
+    { name = "Sergey Afonin" },
+]
+keywords = ["django", "drf", "idempotency", "middleware", "redis"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Framework :: Django",
+    "Framework :: Django :: 4.2",
+    "Framework :: Django :: 5.0",
+    "Framework :: Django :: 5.1",
+    "Framework :: Django :: 5.2",
+    "Framework :: Django :: 6.0",
+    "Intended Audience :: Developers",
+
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Internet :: WWW/HTTP",
+]
+dependencies = [
+    "Django>=4.2",
+    "djangorestframework>=3.14",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+    "pytest-django>=4.8",
+    "fakeredis>=2.23",
+    "djangorestframework>=3.14",
+]
+
+[project.urls]
+Homepage = "https://github.com/safonin/drf-idem"
+Repository = "https://github.com/safonin/drf-idem"
+Issues = "https://github.com/safonin/drf-idem/issues"
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "tests.settings"
+python_files = "test_*.py"
+pythonpath = ["."]
+
+[dependency-groups]
+dev = [
+    "pytest>=8",
+    "pytest-django>=4.8",
+    "fakeredis>=2.23",
+]

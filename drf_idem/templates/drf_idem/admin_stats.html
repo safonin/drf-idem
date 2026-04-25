@@ -1,0 +1,59 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href="{% url 'admin:index' %}">{% translate 'Home' %}</a>
+    &rsaquo; <a href="{% url 'admin:app_list' app_label='drf_idem' %}">Drf_Idem</a>
+    &rsaquo; Idempotency Statistics
+</div>
+{% endblock %}
+
+{% block content %}
+
+<div style="margin-bottom: 20px; padding: 12px; background: {% if memory_warning %}#fff3cd{% else %}#d4edda{% endif %}; border-radius: 4px;">
+  <strong>Memory usage (drf_idem:* keys):</strong>
+  {{ memory_bytes }} bytes / {{ memory_kb }} KB / {{ memory_mb }} MB
+  {% if memory_warning %}
+    <span style="color: #856404; font-weight: bold;">
+      Warning: exceeds {{ warn_threshold_mb }} MB — consider lowering TTL or restricting ENDPOINTS
+    </span>
+  {% endif %}
+</div>
+
+{% if stats %}
+<table style="width: 100%; border-collapse: collapse;">
+  <thead>
+    <tr style="background: #417690; color: white;">
+      <th style="padding: 8px 12px; text-align: left;">#</th>
+      <th style="padding: 8px 12px; text-align: left;">Method</th>
+      <th style="padding: 8px 12px; text-align: left;">Endpoint</th>
+      <th style="padding: 8px 12px; text-align: right;">Duplicates</th>
+      <th style="padding: 8px 12px; text-align: left;">Last seen</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for row in stats %}
+    <tr style="background: {% cycle '#f8f8f8' 'white' %};">
+      <td style="padding: 8px 12px;">{{ forloop.counter }}</td>
+      <td style="padding: 8px 12px;"><code>{{ row.method|escape }}</code></td>
+      <td style="padding: 8px 12px;"><code>{{ row.endpoint|escape }}</code></td>
+      <td style="padding: 8px 12px; text-align: right; font-weight: bold;">{{ row.count }}</td>
+      <td style="padding: 8px 12px;">
+        {% if row.last_seen %}
+          {{ row.last_seen|floatformat:0 }}
+        {% else %}
+          —
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>No duplicate requests recorded yet.</p>
+{% endif %}
+
+{% endblock %}
