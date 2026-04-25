@@ -1,8 +1,9 @@
-from datetime import datetime, timezone
+from datetime import datetime, timezone as dt_timezone
 
 from django.contrib import admin
 from django.contrib.auth.decorators import user_passes_test
 from django.shortcuts import render
+from django.utils import timezone
 
 from .cache import IdempotencyCache
 
@@ -13,10 +14,9 @@ def admin_stats_view(request):
     stats = cache.get_top_stats(limit=50)
     for row in stats:
         if row.get("last_seen"):
-            dt = datetime.fromtimestamp(row["last_seen"], tz=timezone.utc)
-            row["last_seen_iso"] = dt.isoformat(timespec="seconds").replace(
-                "+00:00", "Z"
-            )
+            dt_utc = datetime.fromtimestamp(row["last_seen"], tz=dt_timezone.utc)
+            dt_local = timezone.localtime(dt_utc)
+            row["last_seen_iso"] = dt_local.isoformat(timespec="seconds")
     memory_bytes = cache.get_memory_bytes()
     memory_kb = memory_bytes / 1024
     memory_mb = memory_kb / 1024
